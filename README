@@ -1,0 +1,42 @@
+// Vasile Madalin Constantin 322CB
+Pentru rezolvarea temei, am folosit scheletul laboratorului 10, dar si libraria
+"parson"(aceasta m-a ajutat la parsarea mesajelor de tip json).
+Pentru crearea cererilor, am folosit functiile compute_get_request, 
+compute_post_request, compute_delete_request, pe care le-am implementat in
+requests.c 
+Clientul primeste de la tastatura comenzi si trebuie in functie de comanda
+primita, sa trimita cereri la server-ul API. Pentru citirea fiecarei comenzi,
+am implementat un while care citeste string-uri de la tastatura pana la 
+introducerea lui "Exit"
+	*La primirea comenzii "Exit", se inchide while-ul si programul.
+	*La primirea comenzii "register", se creeaza o cerere de tip post.
+		Pentru crearea cererii, am folosit o functie auxiliara(compute_post_request),
+		care primeste headerele si continutul si returneaza un sir de caractere cu
+		acestea. Pentru convertirea inputul de la tastatura in obiectul json, am creat
+		functia "read_name_password" care returneaza un string ce reprezinta 
+		obiectul json. In caz de eroare, se folosesc functii din libraria "parson"
+		pentru a parsa output-ul.
+	*La primirea comenzii "login", username-ul si password-ul se prelucreaza ca
+	 in cazul anterior, diferenta consta in faptul ca din raspunsul cererii,
+	 se extrage cookie-ul (folosind o functie, numita get_cooke)
+	 	*functia get_cookie, parcurge raspunsul cererii(un sir de caractere),
+	 	 si se cauta primele caractere din linia pe care se afla cookie-ul,
+	 	 apoi se copiaza intr-un alt sir, si se returneaza
+	*La primirea comenzii "enter_library", se trimite o cerere de tip get, 
+	 si din raspunsul primit se extrage token-ul pentru a fi folosit mai tarziu
+	 Pentru extragere token-ului am implementat o functie care returneaza
+	 string-ul necesar din json extras din cerere.
+	 *La primirea comenzii "get_books", se creeaza o cerere de tip get, la aceasta
+	 cerere se adauga si header-ul "Authorization"(la care se adauga si token-ul 
+	 gasit la enter_library), se se afiseaza cartile, folosind o functie numita, 
+	"write_books", care parseaza sirul returnat de raspuns si foloseste libraria 
+	parson pentru a afisa cartile 
+	 *La primirea comenzii "get_book", se procedeaza asemanator cazului anterior, 
+	  cu exceptia ca se adauga si id-ul cartii la url.
+	 *La primirea comenzii "delete_book", se citeste id-ul, si se creeaza o cere 
+	  de tip delete, la care se adauga si header-ul "Authorization".
+	 *La primirea comenzii "add_book", se apeleaza functia "read_book_info" care
+	 citeste informatiile despre o carte apoi se formeaza cerea de tip post la 
+	 care se adauga si si header-ul "Authorization"
+	 *La primirea comenzii "logout", se creeaza cererea de tip get si se trimite
+	 la server
